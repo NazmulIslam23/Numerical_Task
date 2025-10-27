@@ -1,0 +1,51 @@
+1.False position method :f(x)=ln(3x)-3
+
+#include<bits/stdc++.h>
+using namespace std;
+double f(double x)
+{
+    return log(3*x) - 3;
+}
+int main()
+{
+    double a,b,c,fa,fb,fc,tol=1e-4,ea,old;
+    int i=0,mx=100;
+    cin>>a>>b;
+    fa=f(a);
+    fb=f(b);
+    if(fa*fb>0)
+    {
+        cout<<"invalid"<<endl;
+        return 0;
+    }
+    cout<<fixed<<setprecision(6);
+    old=a;
+    do
+    {
+        c=(a*fb-b*fa)/(fb-fa);
+        fc=f(c);
+        i++;
+        ea=fabs((c-old)/c)*100;
+        cout<<i<<":"<<a<<" "<<b<<" "<<c<<" "<<fc<<"Error: "<<ea<<endl;
+        if(fabs(fc)<tol || ea<tol)break;
+        if(fa*fc<0)
+        {
+            b=c;
+            fb=fc;
+        }
+        else
+        {
+            a=c;
+            fa=fc;
+        }
+        old=c;
+
+    }
+    while(i<mx);
+    cout<<"root"<<c<<endl;
+    cout<<ea<<"%"<<endl;
+
+
+    cout<<"iteration: "<<i<<endl;
+}
+
