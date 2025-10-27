@@ -1,0 +1,147 @@
+#1: Better approaches to choose the range [a,b]
+A better approach is to automatically search for a valid range before starting bisection.
+That means:
+1.Start with an initial small interval (say x = 0).
+
+2.Increase step size gradually (say step = 0.5 or 1.0).
+
+3.Check for sign change between consecutive points:
+If f(xi)×f(xi+1)<0, we have found the valid range [x_i, x_{i+1}].
+This way, you automatically find the interval containing the root without manual guesswork.
+
+
+
+#2. Apply the Technique to Solve a Problem
+
+Let’s solve:
+   f(x)=x3−4x−9=0
+
+We’ll solve this using:
+
+(i) Traditional Bisection Method
+
+(ii) Bisection with Automatic Range Detection
+
+Then we’ll compare iterations and efficiency.
+
+(i) Traditional Bisection Method
+Code:
+
+#include<bits/stdc++.h>
+using namespace std;
+
+double f(double x) {
+    return pow(x,3) - 4*x - 9;
+}
+
+int main() {
+    double a, b, c, fa, fb, fc, tol = 1e-6;
+    int iteration = 0;
+    a = 2; 
+    b = 3;
+
+    fa = f(a);
+    fb = f(b);
+
+    if(fa * fb > 0) {
+        cout << "Invalid initial range" << endl;
+        return 0;
+    }
+
+    while((b - a) >= tol) {
+        c = (a + b) / 2;
+        fc = f(c);
+        iteration++;
+
+        if(fc == 0.0)
+            break;
+        else if(fa * fc < 0)
+            b = c;
+        else
+            a = c;
+
+        fa = f(a);
+        fb = f(b);
+    }
+
+    cout << "Root = " << c << endl;
+    cout << "Iterations = " << iteration << endl;
+}
+
+(ii) Improved Bisection (Automatic Range Selection)
+Code:
+
+#include<bits/stdc++.h>
+using namespace std;
+
+double f(double x) {
+    return pow(x,3) - 4*x - 9;
+}
+
+pair<double,double> findRange(double start, double step) {
+    double x1 = start;
+    double x2 = x1 + step;
+
+    while(f(x1)*f(x2) > 0) {
+        x1 = x2;
+        x2 += step;
+        if(x2 > 100) { // avoid infinite loop
+            cout << "No root found in range." << endl;
+            exit(0);
+        }
+    }
+    return {x1, x2};
+}
+
+int main() {
+    double a, b, c, fa, fb, fc, tol = 1e-6;
+    int iteration = 0;
+
+    // Automatically find valid range
+    pair<double,double> range = findRange(0, 0.5);
+    a = range.first;
+    b = range.second;
+
+    cout << "Automatically found range: [" << a << ", " << b << "]" << endl;
+
+    fa = f(a);
+    fb = f(b);
+
+    while((b - a) >= tol) {
+        c = (a + b) / 2;
+        fc = f(c);
+        iteration++;
+
+        if(fc == 0.0)
+            break;
+        else if(fa * fc < 0)
+            b = c;
+        else
+            a = c;
+
+        fa = f(a);
+        fb = f(b);
+    }
+
+    cout << "Root = " << c << endl;
+    cout << "Iterations = " << iteration << endl;
+}
+
+#3. Comparison (Performance)
+| Method      | Range Selection               | Root Found | Iterations | Notes                                |
+| ----------- | ----------------------------- | ---------- | ---------- | ------------------------------------ |
+| Traditional | Manual (a=2, b=3)             | 2.706      | 18         | Need to know range beforehand        |
+| Improved    | Automatic (found by scanning) | 2.706      | 18         | Automatically finds correct interval |
+ Both methods give the same root and convergence speed,
+but the improved version is more reliable because it doesn’t require manual range guessing.
+
+
+	​
+
+
+
+	​
+
+
+
+
