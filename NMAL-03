@@ -1,0 +1,43 @@
+1.Implement Newton Raphson Method for 
+ f(x) = x^5 -3x +5.
+error, £s=10^-3
+
+
+#include<bits/stdc++.h>
+using namespace std;
+double f(double x)
+{
+    return pow(x,5)-3*x+5;
+
+}
+double df(double x)
+{
+    return 5*pow(x,4)-3;
+}
+int main()
+{
+    double x0,x1,fx,dfx,ea,et,tol=1e-3;
+    int i=0,mx=100;
+    cin>>x0;
+    cout<<fixed<<setprecision(6);
+    do
+    {
+        fx=f(x0);
+        dfx=df(x0);
+        if(fabs(dfx)<1e-8)
+        {
+            cout<<"infinite case"<<endl;
+            break;
+        }
+        x1=x0-(fx/dfx);
+        ea=fabs((x1-x0)/x1)*100;
+        cout<<i+1<<" "<<x0<<" "<<fx<<" "<<dfx<<" "<<x1<<" "<<ea<<endl;
+        if(ea<tol || fabs(f(x1))<tol)break;
+        x0=x1;
+        i++;
+    }
+    while(i<mx);
+    cout<<"root: "<<x1<<endl;
+
+    cout<<"iteration: "<<i+1<<endl;
+}
