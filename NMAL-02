@@ -49,3 +49,105 @@ int main()
     cout<<"iteration: "<<i<<endl;
 }
 
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#2.compair between bisection &false position method with True percentage Relative error :f(x) = 4x^2 + 3x - 3.
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+double f(double x)
+{
+    return 4*x*x + 3*x - 3;
+}
+
+double trueError(double x_approx, double x_true)
+{
+    return fabs((x_approx - x_true) / x_true) * 100;
+}
+
+void bisection(double a, double b, double tol, double x_true, double &root, int &iterations)
+{
+    iterations = 0;
+    double c;
+
+    while ((b - a) >= tol)
+    {
+        c = (a + b)/2;
+        double fc = f(c);
+        iterations++;
+        double err = trueError(c, x_true);
+
+        cout << iterations << "\t" << a << "\t" << b << "\t" << c << "\t" << fc << "\t" << err << endl;
+
+        if (fabs(fc) < tol) break;
+        if (f(a)*fc < 0)
+            b = c;
+        else
+            a = c;
+    }
+    root = c;
+}
+
+void falsePosition(double a, double b, double tol, double x_true, double &root, int &iterations)
+{
+    iterations = 0;
+    double c, fa = f(a), fb = f(b);
+
+    while (true)
+    {
+        c = b - fb*(a - b)/(fa - fb);
+        double fc = f(c);
+        iterations++;
+        double err = trueError(c, x_true);
+
+        cout << iterations << "\t" << a << "\t" << b << "\t" << c << "\t" << fc << "\t" << err << endl;
+
+        if (fabs(fc) < tol) break;
+
+        if (fa*fc < 0)
+        {
+            b = c;
+            fb = fc;
+        }
+        else
+        {
+            a = c;
+            fa = fc;
+        }
+    }
+    root = c;
+}
+
+int main()
+{
+    double a = 0, b = 1;
+    double tol = 1e-4;
+    double x_true = (-3 + sqrt(57))/8;
+
+    double b_root, f_root;
+    int b_iter, f_iter;
+
+
+    bisection(a, b, tol, x_true, b_root, b_iter);
+
+    falsePosition(a, b, tol, x_true, f_root, f_iter);
+
+    cout << "Bisection\t" << b_root << "\t" << b_iter
+         << "\t\t" << trueError(b_root, x_true) << endl;
+    cout << "False\t" << f_root << "\t" << f_iter
+         << "\t\t" << trueError(f_root, x_true) << endl;
+
+    return 0;
+}
+
+
+
+
+
+
+
+
